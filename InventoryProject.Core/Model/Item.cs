@@ -1,4 +1,4 @@
-﻿namespace InventoryProject.API.Domain;
+﻿namespace InventoryProject.Core.Model;
 
 public record Item
 {
