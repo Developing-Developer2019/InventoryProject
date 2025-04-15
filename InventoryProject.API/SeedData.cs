@@ -1,7 +1,7 @@
-using DotNetInterview.API.Domain;
+using InventoryProject.API.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace DotNetInterview.API;
+namespace InventoryProject.API;
 
 internal static class SeedData
 {
