@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\InventoryProject.API\DotNetInterview.API.csproj" />
+    <ProjectReference Include="..\InventoryProject.API\InventoryProject.API.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,9 +4,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A1627265-22B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E9F42358-5DFB-457B-8FAC-AEB14E438D22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetInterview.API", "InventoryProject.API\DotNetInterview.API.csproj", "{52380D69-C6D2-4A0E-A2E6-8E06608DE7B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryProject.API", "InventoryProject.API\InventoryProject.API.csproj", "{52380D69-C6D2-4A0E-A2E6-8E06608DE7B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetInterview.Tests", "InventoryProject.Tests\DotNetInterview.Tests.csproj", "{F89C6858-1C1B-47CB-9821-CFA91CA3A24A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryProject.Tests", "InventoryProject.Tests\InventoryProject.Tests.csproj", "{F89C6858-1C1B-47CB-9821-CFA91CA3A24A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryProject.Core", "InventoryProject.Core\InventoryProject.Core.csproj", "{C3BB7495-9DF8-4579-9F3D-825700FF6B30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryProject.Data", "InventoryProject.Data\InventoryProject.Data.csproj", "{75CBFC1A-9413-462D-83C5-DF7FB6A69AA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryProject.Service", "InventoryProject.Service\InventoryProject.Service.csproj", "{B5EB8859-BA00-435C-AACB-489EB139DA3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,6 +22,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{52380D69-C6D2-4A0E-A2E6-8E06608DE7B2} = {A1627265-22BB-4CEC-8B6B-C3CA423787F2}
 		{F89C6858-1C1B-47CB-9821-CFA91CA3A24A} = {E9F42358-5DFB-457B-8FAC-AEB14E438D22}
+		{C3BB7495-9DF8-4579-9F3D-825700FF6B30} = {A1627265-22BB-4CEC-8B6B-C3CA423787F2}
+		{75CBFC1A-9413-462D-83C5-DF7FB6A69AA9} = {A1627265-22BB-4CEC-8B6B-C3CA423787F2}
+		{B5EB8859-BA00-435C-AACB-489EB139DA3D} = {A1627265-22BB-4CEC-8B6B-C3CA423787F2}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{52380D69-C6D2-4A0E-A2E6-8E06608DE7B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -26,5 +35,17 @@ Global
 		{F89C6858-1C1B-47CB-9821-CFA91CA3A24A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F89C6858-1C1B-47CB-9821-CFA91CA3A24A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F89C6858-1C1B-47CB-9821-CFA91CA3A24A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3BB7495-9DF8-4579-9F3D-825700FF6B30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3BB7495-9DF8-4579-9F3D-825700FF6B30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3BB7495-9DF8-4579-9F3D-825700FF6B30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3BB7495-9DF8-4579-9F3D-825700FF6B30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75CBFC1A-9413-462D-83C5-DF7FB6A69AA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75CBFC1A-9413-462D-83C5-DF7FB6A69AA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75CBFC1A-9413-462D-83C5-DF7FB6A69AA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75CBFC1A-9413-462D-83C5-DF7FB6A69AA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5EB8859-BA00-435C-AACB-489EB139DA3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5EB8859-BA00-435C-AACB-489EB139DA3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5EB8859-BA00-435C-AACB-489EB139DA3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5EB8859-BA00-435C-AACB-489EB139DA3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
