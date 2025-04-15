@@ -1,4 +1,4 @@
-﻿namespace DotNetInterview.API.Domain;
+﻿namespace InventoryProject.API.Domain;
 
 public record Variation
 {
