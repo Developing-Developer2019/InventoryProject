@@ -1,7 +1,7 @@
-using InventoryProject.API.Domain;
+using InventoryProject.Core.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryProject.API;
+namespace InventoryProject.Data.Seed;
 
 internal static class SeedData
 {

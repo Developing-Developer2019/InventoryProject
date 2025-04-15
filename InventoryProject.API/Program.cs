@@ -1,4 +1,4 @@
-using InventoryProject.API;
+using InventoryProject.Data.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 

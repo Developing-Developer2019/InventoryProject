@@ -1,7 +1,8 @@
-﻿using InventoryProject.API.Domain;
+﻿using InventoryProject.Core.Model;
+using InventoryProject.Data.Seed;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryProject.API
+namespace InventoryProject.Data.Data
 {
     public sealed class DataContext : DbContext
     {
