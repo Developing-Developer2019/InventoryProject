@@ -11,7 +11,7 @@ namespace InventoryProject.Tests
         [SetUp]
         public void Setup()
         {
-            var connection = new SqliteConnection("InventoryProject.Data Source=DotNetInterview;Mode=Memory;Cache=Shared");
+            var connection = new SqliteConnection("Data Source=InventoryProject;Mode=Memory;Cache=Shared");
             connection.Open();
             var options = new DbContextOptionsBuilder<DataContext>()
                 .UseSqlite(connection)
