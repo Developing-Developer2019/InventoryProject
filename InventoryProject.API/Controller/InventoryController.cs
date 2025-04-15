@@ -1,4 +1,5 @@
 using InventoryProject.Core.Model;
+using InventoryProject.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryProject.API.Controller;
@@ -7,6 +8,13 @@ namespace InventoryProject.API.Controller;
 [Route("api/[controller]")]
 public class InventoryController : ControllerBase
 {
+    private readonly IItemService _itemService;
+
+    public InventoryController(IItemService itemService)
+    {
+        _itemService = itemService;
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAllItems()
     {

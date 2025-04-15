@@ -1,6 +1,9 @@
 using InventoryProject.API.Controller;
 using InventoryProject.Core.Model;
+using InventoryProject.Service;
+using InventoryProject.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace InventoryProject.Tests;
 
@@ -8,11 +11,13 @@ namespace InventoryProject.Tests;
 public class InventoryControllerTests
 {
     private InventoryController _controller;
+    private Mock<IItemService> _mockService;
 
     [SetUp]
     public void Setup()
     {
-        _controller = new InventoryController();
+        _mockService = new Mock<IItemService>();
+        _controller = new InventoryController(_mockService.Object);
     }
 
     [Test]
