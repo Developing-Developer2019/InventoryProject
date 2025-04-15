@@ -1,4 +1,6 @@
 using InventoryProject.Data.Data;
+using InventoryProject.Service;
+using InventoryProject.Service.Interface;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IItemService, ItemService>();
 
 var connection = new SqliteConnection("Data Source=InventoryProject;Mode=Memory;Cache=Shared");
 connection.Open();
