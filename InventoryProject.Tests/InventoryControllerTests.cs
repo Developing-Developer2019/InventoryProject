@@ -63,10 +63,44 @@ public class InventoryControllerTests
     }
 
     [Test]
-    public async Task GetItemById_ReturnsOk()
+    public async Task GetItemById_WhenItemExists_ReturnsOkWithItem()
     {
-        var result = await _controller.GetItemById(Guid.NewGuid());
-        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var mockItems = new List<ItemResponse>
+        {
+            new ItemResponse() { Id = Guid.NewGuid(), Name = "One" },
+            new ItemResponse() { Id = new Guid("d9e6b0db-5810-49b2-b3b9-53fba78b836e"), Name = "Two" }
+        };
+        
+        _mockService.Setup(s => s.GetItemByIdAsync(new Guid("d9e6b0db-5810-49b2-b3b9-53fba78b836e"))).ReturnsAsync(mockItems.First);
+
+        var result = await _controller.GetItemById(new Guid("d9e6b0db-5810-49b2-b3b9-53fba78b836e")) as OkObjectResult;
+
+        Assert.That(result, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            Assert.That(result.Value, Is.EqualTo(mockItems.First()));
+        });
+    }
+    
+    [Test]
+    public async Task GetItemById_WhenNoItemExists_ReturnsNotFound()
+    {
+        _mockService.Setup(s => s.GetAllItemsAsync()).ReturnsAsync(new List<ItemResponse>());
+
+        var result = await _controller.GetItemById(new Guid("d9e6b0db-5810-49b2-b3b9-53fba78b836e")) as NotFoundObjectResult;
+
+        // Assert
+        Assert.That(result, Is.Not.Null);
+    
+        var problem = result.Value as ProblemDetails;
+        Assert.That(problem, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(problem.Status, Is.EqualTo(StatusCodes.Status404NotFound));
+            Assert.That(problem.Title, Is.EqualTo("Item not found"));
+            Assert.That(problem.Detail, Is.EqualTo("No item found with ID d9e6b0db-5810-49b2-b3b9-53fba78b836e"));
+        });
     }
 
     [Test]

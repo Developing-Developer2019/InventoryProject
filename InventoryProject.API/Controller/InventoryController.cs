@@ -19,7 +19,6 @@ public class InventoryController : ControllerBase
     public async Task<IActionResult> GetAllItems()
     {
         var items = await _itemService.GetAllItemsAsync();
-
         
         if (!items.Any())
         {
@@ -37,7 +36,17 @@ public class InventoryController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetItemById(Guid id)
     {
-        return Ok(new Item());
+        var item = await _itemService.GetItemByIdAsync(id);
+        
+        if (item == null)
+            return NotFound(new ProblemDetails
+            {
+                Title = "Item not found",
+                Status = StatusCodes.Status404NotFound,
+                Detail = $"No item found with ID {id}"
+            });
+        
+        return Ok(item);
     }
 
     [HttpPost]
