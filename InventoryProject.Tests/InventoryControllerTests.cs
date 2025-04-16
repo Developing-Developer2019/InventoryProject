@@ -1,4 +1,6 @@
 using InventoryProject.API.Controller;
+using InventoryProject.Core.Enum;
+using InventoryProject.Core.Helper;
 using InventoryProject.Core.Model;
 using InventoryProject.Core.Model.API;
 using InventoryProject.Service;
@@ -25,11 +27,8 @@ public class InventoryControllerTests
     [Test]
     public async Task GetAllItems_WhenItemsExist_ReturnsOkWithItems()
     {
-        var mockItems = new List<ItemResponse>
-        {
-            new ItemResponse() { Id = Guid.NewGuid(), Name = "One" },
-            new ItemResponse() { Id = Guid.NewGuid(), Name = "Two" }
-        };
+        var mockItems = CreateItemResponses();
+
         _mockService.Setup(s => s.GetAllItemsAsync()).ReturnsAsync(mockItems);
 
         var result = await _controller.GetAllItems() as OkObjectResult;
@@ -51,7 +50,7 @@ public class InventoryControllerTests
 
         // Assert
         Assert.That(result, Is.Not.Null);
-    
+
         var problem = result.Value as ProblemDetails;
         Assert.That(problem, Is.Not.Null);
         Assert.Multiple(() =>
@@ -65,15 +64,12 @@ public class InventoryControllerTests
     [Test]
     public async Task GetItemById_WhenItemExists_ReturnsOkWithItem()
     {
-        var mockItems = new List<ItemResponse>
-        {
-            new ItemResponse() { Id = Guid.NewGuid(), Name = "One" },
-            new ItemResponse() { Id = new Guid("d9e6b0db-5810-49b2-b3b9-53fba78b836e"), Name = "Two" }
-        };
-        
-        _mockService.Setup(s => s.GetItemByIdAsync(new Guid("d9e6b0db-5810-49b2-b3b9-53fba78b836e"))).ReturnsAsync(mockItems.First);
+        var mockItems = CreateItemResponses();
+        var itemId = Guid.NewGuid();
 
-        var result = await _controller.GetItemById(new Guid("d9e6b0db-5810-49b2-b3b9-53fba78b836e")) as OkObjectResult;
+        _mockService.Setup(s => s.GetItemByIdAsync(itemId)).ReturnsAsync(mockItems.First);
+
+        var result = await _controller.GetItemById(itemId) as OkObjectResult;
 
         Assert.That(result, Is.Not.Null);
         Assert.Multiple(() =>
@@ -82,32 +78,62 @@ public class InventoryControllerTests
             Assert.That(result.Value, Is.EqualTo(mockItems.First()));
         });
     }
-    
+
     [Test]
     public async Task GetItemById_WhenNoItemExists_ReturnsNotFound()
     {
+        var itemId = Guid.NewGuid();
         _mockService.Setup(s => s.GetAllItemsAsync()).ReturnsAsync(new List<ItemResponse>());
 
-        var result = await _controller.GetItemById(new Guid("d9e6b0db-5810-49b2-b3b9-53fba78b836e")) as NotFoundObjectResult;
+        var result =
+            await _controller.GetItemById(itemId) as NotFoundObjectResult;
 
         // Assert
         Assert.That(result, Is.Not.Null);
-    
+
         var problem = result.Value as ProblemDetails;
         Assert.That(problem, Is.Not.Null);
         Assert.Multiple(() =>
         {
             Assert.That(problem.Status, Is.EqualTo(StatusCodes.Status404NotFound));
             Assert.That(problem.Title, Is.EqualTo("Item not found"));
-            Assert.That(problem.Detail, Is.EqualTo("No item found with ID d9e6b0db-5810-49b2-b3b9-53fba78b836e"));
+            Assert.That(problem.Detail, Is.EqualTo($"No item found with ID {itemId}"));
+        });
+    }
+    
+    [Test]
+    public async Task CreateItem_WhenSuccessful_ReturnsCreatedResult()
+    {
+        var item = CreateItem();
+        var response = item.MapToItemResponse(DiscountAmount.None);
+
+        _mockService.Setup(s => s.CreateItemAsync(It.IsAny<Item>()))
+            .ReturnsAsync(response);
+
+        var result = await _controller.CreateItem(item);
+        var created = result as CreatedAtActionResult;
+
+        Assert.That(created, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(created!.StatusCode, Is.EqualTo(StatusCodes.Status201Created));
+            Assert.That(created.Value, Is.EqualTo(response.Id));
         });
     }
 
     [Test]
-    public async Task CreateItem_ReturnsOk()
+    public async Task CreateItem_WhenUnsuccessful_ReturnsBadRequest()
     {
-        var result = await _controller.CreateItem(new Item());
-        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var item = CreateItem();
+
+        _mockService.Setup(s => s.CreateItemAsync(It.IsAny<Item>()))
+            .ReturnsAsync((ItemResponse?)null); // simulate failure
+
+        var result = await _controller.CreateItem(item);
+        var badRequest = result as BadRequestObjectResult;
+
+        Assert.That(badRequest, Is.Not.Null);
+        Assert.That(badRequest!.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
     }
 
     [Test]
@@ -122,5 +148,58 @@ public class InventoryControllerTests
     {
         var result = await _controller.DeleteItem(Guid.NewGuid());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
+    }
+
+    private List<ItemResponse> CreateItemResponses()
+    {
+        var itemIdOne = Guid.NewGuid();
+        var itemIdTwo = Guid.NewGuid();
+
+        return new List<ItemResponse>
+        {
+            new ItemResponse
+            {
+                Id = itemIdOne,
+                Name = "One",
+                Reference = "ZX321",
+                Price = 10,
+                DiscountAmount = DiscountAmount.None,
+                Variations = new List<Variation>
+                {
+                    new Variation() { Id = Guid.NewGuid(), ItemId = itemIdOne, Quantity = 5, Size = "Small" },
+                    new Variation() { Id = Guid.NewGuid(), ItemId = itemIdOne, Quantity = 2, Size = "Medium" }
+                }
+            },
+            new ItemResponse
+            {
+                Id = itemIdTwo,
+                Name = "Two",
+                Reference = "ZX321",
+                Price = 8,
+                DiscountAmount = DiscountAmount.None,
+                Variations = new List<Variation>
+                {
+                    new Variation() { Id = Guid.NewGuid(), ItemId = itemIdOne, Quantity = 3, Size = "Small" },
+                }
+            }
+        };
+    }
+
+    private Item CreateItem()
+    {
+        var itemIdOne = Guid.NewGuid();
+
+        return new Item
+        {
+            Id = itemIdOne,
+            Name = "One",
+            Reference = "ZX321",
+            Price = 10,
+            Variations = new List<Variation>
+            {
+                new Variation() { Id = Guid.NewGuid(), ItemId = itemIdOne, Quantity = 1, Size = "Small" },
+                new Variation() { Id = Guid.NewGuid(), ItemId = itemIdOne, Quantity = 2, Size = "Medium" }
+            }
+        };
     }
 }

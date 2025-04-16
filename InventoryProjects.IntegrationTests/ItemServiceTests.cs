@@ -1,3 +1,4 @@
+using InventoryProject.Core.Model;
 using InventoryProject.Data.Data;
 using InventoryProject.Service;
 using InventoryProject.Service.Interface;
@@ -48,5 +49,29 @@ public class ItemServiceTests
         Assert.That(result.Name, Is.EqualTo("Shorts"));
         Assert.That(result.Variations.Count, Is.EqualTo(3));
         Assert.That(result.Variations.Sum(v => v.Quantity), Is.EqualTo(10));
+    }
+
+    [Test]
+    public async Task CreateItemAsync_ShouldCreateItem()
+    {
+        var itemId = new Guid("24b078a2-9bd0-4cf7-91f1-796161fd8e7b");
+
+        Item item = new Item()
+        {
+            Id = itemId,
+            Reference = "Sample Reference",
+            Name = "Sample Item",
+            Price = 10,
+            Variations = new List<Variation>()
+            {
+                new Variation() { Id = Guid.NewGuid(), ItemId = itemId, Quantity = 5, Size = "Small" },
+                new Variation() { Id = Guid.NewGuid(), ItemId = itemId, Quantity = 2, Size = "Medium" }
+            }
+        };
+        
+        var result = await _itemService.CreateItemAsync(item);
+        
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.Variations.Count, Is.EqualTo(2));
     }
 }
