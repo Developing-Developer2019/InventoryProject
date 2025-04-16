@@ -1,4 +1,5 @@
 using InventoryProject.Core.Model;
+using InventoryProject.Core.Model.API;
 using InventoryProject.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -67,8 +68,37 @@ public class InventoryController : ControllerBase
     }
 
     [HttpPatch]
-    public async Task<IActionResult> UpdateItem(Item item)
+    public async Task<IActionResult> UpdateItem(ItemUpdateRequest itemUpdateRequest)
     {
+        if (itemUpdateRequest.Id == Guid.Empty)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Title = "Id is required",
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+
+        if (itemUpdateRequest.Reference == null && itemUpdateRequest.Name == null && itemUpdateRequest.Price == null && itemUpdateRequest.Variations == null)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Title = "At least one field to update must be provided",
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+
+        var result = await _itemService.UpdateItemAsync(itemUpdateRequest);
+
+        if (!result)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Title = "Unable to update item",
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+
         return Ok("Item updated");
     }
 

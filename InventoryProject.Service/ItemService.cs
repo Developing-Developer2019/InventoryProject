@@ -58,4 +58,21 @@ public class ItemService : IItemService
         (var discountedItem, DiscountAmount? discount) = DiscountChecker.ApplyDiscount(item);
         return discountedItem.MapToItemResponse(discount);
     }
+    
+    public async Task<bool> UpdateItemAsync(ItemUpdateRequest update)
+    {
+        var existing = await _dataContext.Items
+            .Include(i => i.Variations)
+            .FirstOrDefaultAsync(i => i.Id == update.Id);
+
+        if (existing == null) return false;
+        
+        if (update.Reference != null) existing.Reference = update.Reference;
+        if (update.Name != null) existing.Name = update.Name;
+        if (update.Price.HasValue) existing.Price = update.Price.Value;
+        if (update.Variations != null) existing.Variations = update.Variations;
+
+        var result = await _dataContext.SaveChangesAsync();
+        return result > 0;
+    }
 }
