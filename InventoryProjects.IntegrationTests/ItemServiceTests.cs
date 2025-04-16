@@ -1,4 +1,5 @@
 using InventoryProject.Core.Model;
+using InventoryProject.Core.Model.API;
 using InventoryProject.Data.Data;
 using InventoryProject.Service;
 using InventoryProject.Service.Interface;
@@ -73,5 +74,43 @@ public class ItemServiceTests
         
         Assert.That(result, Is.Not.Null);
         Assert.That(result!.Variations.Count, Is.EqualTo(2));
+    }
+    
+    [Test]
+    public async Task UpdateItemAsync_ShouldUpdateItem()
+    {
+        // Arrange
+        var itemId = Guid.NewGuid();
+
+        var item = new Item
+        {
+            Id = itemId,
+            Reference = "OldRef",
+            Name = "OldName",
+            Price = 5
+        };
+
+        _dataContext.Items.Add(item);
+        await _dataContext.SaveChangesAsync();
+
+        var updateRequest = new ItemUpdateRequest
+        {
+            Id = itemId,
+            Reference = "NewRef",
+            Name = "NewName",
+            Price = 20
+        };
+
+        var success = await _itemService.UpdateItemAsync(updateRequest);
+
+        // Assert
+        Assert.That(success, Is.True);
+
+        var updated = await _dataContext.Items.Include(i => i.Variations).FirstOrDefaultAsync(i => i.Id == itemId);
+
+        Assert.That(updated, Is.Not.Null);
+        Assert.That(updated!.Reference, Is.EqualTo("NewRef"));
+        Assert.That(updated.Name, Is.EqualTo("NewName"));
+        Assert.That(updated.Price, Is.EqualTo(20));
     }
 }
