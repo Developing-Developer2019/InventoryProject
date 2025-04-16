@@ -1,5 +1,6 @@
 using InventoryProject.Core.Enum;
 using InventoryProject.Core.Helper;
+using InventoryProject.Core.Model;
 using InventoryProject.Core.Model.API;
 using InventoryProject.Data.Data;
 using InventoryProject.Service.Interface;
@@ -44,6 +45,16 @@ public class ItemService : IItemService
             return null;
         }
         
+        (var discountedItem, DiscountAmount? discount) = DiscountChecker.ApplyDiscount(item);
+        return discountedItem.MapToItemResponse(discount);
+    }
+    
+    public async Task<ItemResponse?> CreateItemAsync(Item item)
+    {
+        _dataContext.Items.Add(item);
+        var saved = await _dataContext.SaveChangesAsync() > 0;
+        if (!saved) return null;
+
         (var discountedItem, DiscountAmount? discount) = DiscountChecker.ApplyDiscount(item);
         return discountedItem.MapToItemResponse(discount);
     }
