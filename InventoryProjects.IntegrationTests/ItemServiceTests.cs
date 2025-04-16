@@ -14,7 +14,7 @@ public class ItemServiceTests
 
     /// <summary>
     /// Here I am using the SqlLite data, when in reality, there wouldn't be Database.EnsureCreated(); in DataContext.cs
-    /// So it would be dummy data being created.
+    /// So it would be mock data being created.
     /// </summary>
     [SetUp]
     public void Setup()
@@ -35,5 +35,18 @@ public class ItemServiceTests
         Assert.That(items, Is.Not.Empty);
         Assert.That(items.First().Name, Is.EqualTo("Shorts"));
         Assert.That(items.First().Variations.Count, Is.EqualTo(3));
+    }
+    
+    [Test]
+    public async Task GetItemByIdAsync_ShouldReturnCorrectItem()
+    {
+        var shorts = _dataContext.Items.Include(i => i.Variations).First(i => i.Reference == "A123");
+        var result = await _itemService.GetItemByIdAsync(shorts.Id);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.Reference, Is.EqualTo("A123"));
+        Assert.That(result.Name, Is.EqualTo("Shorts"));
+        Assert.That(result.Variations.Count, Is.EqualTo(3));
+        Assert.That(result.Variations.Sum(v => v.Quantity), Is.EqualTo(10));
     }
 }
