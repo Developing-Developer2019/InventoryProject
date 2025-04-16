@@ -33,4 +33,18 @@ public class ItemService : IItemService
         return mappedResponse;
     }
     
+    public async Task<ItemResponse?> GetItemByIdAsync(Guid id)
+    {
+        var item = await _dataContext.Items.Where(item => item.Id == id)
+            .Include(variation => variation.Variations)
+            .FirstOrDefaultAsync();
+
+        if (item == null)
+        {
+            return null;
+        }
+        
+        (var discountedItem, DiscountAmount? discount) = DiscountChecker.ApplyDiscount(item);
+        return discountedItem.MapToItemResponse(discount);
+    }
 }
