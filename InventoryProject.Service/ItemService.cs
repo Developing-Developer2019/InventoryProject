@@ -75,4 +75,13 @@ public class ItemService : IItemService
         var result = await _dataContext.SaveChangesAsync();
         return result > 0;
     }
+    
+    public async Task<bool> DeleteItemAsync(Guid id)
+    {
+        var item = await _dataContext.Items.Where(item => item.Id == id).FirstOrDefaultAsync();
+        if (item == null) return false;
+        _dataContext.Items.Remove(item);
+        var result = await _dataContext.SaveChangesAsync();
+        return result > 0;
+    }
 }
