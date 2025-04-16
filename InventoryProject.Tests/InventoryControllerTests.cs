@@ -1,7 +1,9 @@
 using InventoryProject.API.Controller;
 using InventoryProject.Core.Model;
+using InventoryProject.Core.Model.API;
 using InventoryProject.Service;
 using InventoryProject.Service.Interface;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -21,10 +23,43 @@ public class InventoryControllerTests
     }
 
     [Test]
-    public async Task GetAllItems_ReturnsOk()
+    public async Task GetAllItems_WhenItemsExist_ReturnsOkWithItems()
     {
-        var result = await _controller.GetAllItems();
-        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var mockItems = new List<ItemResponse>
+        {
+            new ItemResponse() { Id = Guid.NewGuid(), Name = "One" },
+            new ItemResponse() { Id = Guid.NewGuid(), Name = "Two" }
+        };
+        _mockService.Setup(s => s.GetAllItemsAsync()).ReturnsAsync(mockItems);
+
+        var result = await _controller.GetAllItems() as OkObjectResult;
+
+        Assert.That(result, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            Assert.That(result.Value, Is.EqualTo(mockItems));
+        });
+    }
+
+    [Test]
+    public async Task GetAllItems_WhenNoItemsExist_ReturnsNotFound()
+    {
+        _mockService.Setup(s => s.GetAllItemsAsync()).ReturnsAsync(new List<ItemResponse>());
+
+        var result = await _controller.GetAllItems() as NotFoundObjectResult;
+
+        // Assert
+        Assert.That(result, Is.Not.Null);
+    
+        var problem = result.Value as ProblemDetails;
+        Assert.That(problem, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(problem.Status, Is.EqualTo(StatusCodes.Status404NotFound));
+            Assert.That(problem.Title, Is.EqualTo("No items found"));
+            Assert.That(problem.Detail, Is.EqualTo("No items found"));
+        });
     }
 
     [Test]
