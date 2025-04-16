@@ -127,7 +127,7 @@ public class InventoryControllerTests
         var item = CreateItem();
 
         _mockService.Setup(s => s.CreateItemAsync(It.IsAny<Item>()))
-            .ReturnsAsync((ItemResponse?)null); // simulate failure
+            .ReturnsAsync((ItemResponse?)null);
 
         var result = await _controller.CreateItem(item);
         var badRequest = result as BadRequestObjectResult;
@@ -137,10 +137,43 @@ public class InventoryControllerTests
     }
 
     [Test]
-    public async Task UpdateItem_ReturnsOk()
+    public async Task UpdateItem_WhenSuccessful_ReturnsUpdatedItem()
     {
-        var result = await _controller.UpdateItem(new Item());
+        ItemUpdateRequest updateRequest = new ItemUpdateRequest
+        {
+            Id = Guid.NewGuid(),
+            Reference = "NewReference"
+        };
+
+        _mockService.Setup(s => s.UpdateItemAsync(It.IsAny<ItemUpdateRequest>())).ReturnsAsync(true);
+
+        var result = await _controller.UpdateItem(updateRequest) as OkObjectResult;
+        Assert.That(result, Is.Not.Null);
+        
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            Assert.That(result.Value, Is.EqualTo("Item updated"));
+        });
+    }
+    
+    [Test]
+    public async Task UpdateItem_WhenFailed_ReturnsBadRequest()
+    {
+        var updateRequest = new ItemUpdateRequest
+        {
+            Id = Guid.NewGuid(),
+            Reference = "NewReference"
+        };
+
+        _mockService.Setup(s => s.UpdateItemAsync(It.IsAny<ItemUpdateRequest>()))
+            .ReturnsAsync(false);
+
+        var result = await _controller.UpdateItem(updateRequest) as BadRequestObjectResult;
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
     }
 
     [Test]
@@ -150,7 +183,7 @@ public class InventoryControllerTests
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
     }
 
-    private List<ItemResponse> CreateItemResponses()
+    private static List<ItemResponse> CreateItemResponses()
     {
         var itemIdOne = Guid.NewGuid();
         var itemIdTwo = Guid.NewGuid();
@@ -185,7 +218,7 @@ public class InventoryControllerTests
         };
     }
 
-    private Item CreateItem()
+    private static Item CreateItem()
     {
         var itemIdOne = Guid.NewGuid();
 
