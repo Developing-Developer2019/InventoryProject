@@ -105,6 +105,18 @@ public class InventoryController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> DeleteItem(Guid id)
     {
+        var result = await _itemService.DeleteItemAsync(id);
+        
+        if (!result)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Title = "Unable to delete item",
+                Status = StatusCodes.Status400BadRequest,
+                Detail = $"Cannot delete item with ID {id}"
+            });
+        }
+        
         return Ok("Item deleted");
     }
 }
