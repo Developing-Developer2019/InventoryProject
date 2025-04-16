@@ -52,8 +52,9 @@
 1. Unit test for discount logic
     - Edge cases
     - Time-based logic
-2. Unit tests for service methods***
+2. Unit tests for methods
+3. Integration tests for service methods
 
 ### Future Possible Enhancements (Not Implemented Yet)
-- ***Integration Tests
 - Pagination Support to GET all items and GET itemById (for variations if needed)
+- Authorization/Authentication for staff level methods i.e: Create, Update, Delete.
