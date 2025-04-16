@@ -18,7 +18,20 @@ public class InventoryController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllItems()
     {
-        return Ok(new List<Item>());
+        var items = await _itemService.GetAllItemsAsync();
+
+        
+        if (!items.Any())
+        {
+            return NotFound(new ProblemDetails
+            {
+                Title = "No items found",
+                Status = StatusCodes.Status404NotFound,
+                Detail = "No items found"
+            });
+        }
+        
+        return Ok(await _itemService.GetAllItemsAsync());
     }
 
     [HttpGet("{id:guid}")]
