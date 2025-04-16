@@ -177,10 +177,42 @@ public class InventoryControllerTests
     }
 
     [Test]
-    public async Task DeleteItem_ReturnsOk()
+    public async Task DeleteItem_WhenSuccessful_ReturnsOk()
     {
-        var result = await _controller.DeleteItem(Guid.NewGuid());
-        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var itemId = Guid.NewGuid();
+
+        _mockService.Setup(s => s.DeleteItemAsync(itemId)).ReturnsAsync(true);
+
+        var result = await _controller.DeleteItem(itemId) as OkObjectResult;
+        Assert.That(result, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            Assert.That(result.Value, Is.EqualTo("Item deleted"));
+        });
+    }
+    
+    [Test]
+    public async Task DeleteItem_WhenFailed_ReturnsBadRequest()
+    {
+        var itemId = Guid.NewGuid();
+
+        _mockService.Setup(s => s.DeleteItemAsync(itemId))
+            .ReturnsAsync(false);
+
+        var result = await _controller.DeleteItem(itemId);
+
+        var badRequest = result as BadRequestObjectResult;
+        Assert.That(badRequest, Is.Not.Null);
+        Assert.That(badRequest!.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+
+        var problem = badRequest.Value as ProblemDetails;
+        Assert.That(problem, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(problem.Title, Is.EqualTo("Unable to delete item"));
+            Assert.That(problem.Detail, Does.Contain(itemId.ToString()));
+        });
     }
 
     private static List<ItemResponse> CreateItemResponses()
