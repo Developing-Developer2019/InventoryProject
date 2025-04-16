@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryProject.Data", "In
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryProject.Service", "InventoryProject.Service\InventoryProject.Service.csproj", "{B5EB8859-BA00-435C-AACB-489EB139DA3D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryProjects.IntegrationTests", "InventoryProjects.IntegrationTests\InventoryProjects.IntegrationTests.csproj", "{BE3DC201-F8AB-4B94-AFB1-E6FE6909BC91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,7 @@ Global
 		{C3BB7495-9DF8-4579-9F3D-825700FF6B30} = {A1627265-22BB-4CEC-8B6B-C3CA423787F2}
 		{75CBFC1A-9413-462D-83C5-DF7FB6A69AA9} = {A1627265-22BB-4CEC-8B6B-C3CA423787F2}
 		{B5EB8859-BA00-435C-AACB-489EB139DA3D} = {A1627265-22BB-4CEC-8B6B-C3CA423787F2}
+		{BE3DC201-F8AB-4B94-AFB1-E6FE6909BC91} = {E9F42358-5DFB-457B-8FAC-AEB14E438D22}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{52380D69-C6D2-4A0E-A2E6-8E06608DE7B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -47,5 +50,9 @@ Global
 		{B5EB8859-BA00-435C-AACB-489EB139DA3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5EB8859-BA00-435C-AACB-489EB139DA3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5EB8859-BA00-435C-AACB-489EB139DA3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE3DC201-F8AB-4B94-AFB1-E6FE6909BC91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE3DC201-F8AB-4B94-AFB1-E6FE6909BC91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE3DC201-F8AB-4B94-AFB1-E6FE6909BC91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE3DC201-F8AB-4B94-AFB1-E6FE6909BC91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
