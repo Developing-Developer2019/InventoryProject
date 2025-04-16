@@ -52,7 +52,18 @@ public class InventoryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateItem(Item item)
     {
-        return Ok("Item created");
+        var result = await _itemService.CreateItemAsync(item);
+
+        if (result == null)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Title = "Unable to create item",
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+
+        return CreatedAtAction(nameof(GetItemById), new { id = result.Id }, result.Id);
     }
 
     [HttpPatch]
