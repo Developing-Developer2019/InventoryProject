@@ -9,4 +9,5 @@ public interface IItemService
     Task<ItemResponse?> GetItemByIdAsync(Guid id);
     Task<ItemResponse?> CreateItemAsync(Item item);
     Task<bool> UpdateItemAsync(ItemUpdateRequest item);
+    Task<bool> DeleteItemAsync(Guid id);
 }

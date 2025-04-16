@@ -113,4 +113,40 @@ public class ItemServiceTests
         Assert.That(updated.Name, Is.EqualTo("NewName"));
         Assert.That(updated.Price, Is.EqualTo(20));
     }
+    
+    [Test]
+    public async Task DeleteItemAsync_ShouldDeleteItem()
+    {
+        // Arrange
+        var itemId = Guid.NewGuid();
+        var item = new Item
+        {
+            Id = itemId,
+            Reference = "ToDelete",
+            Name = "Delete Me",
+            Price = 20,
+            Variations = new List<Variation>
+            {
+                new Variation { Id = Guid.NewGuid(), ItemId = itemId, Size = "XL", Quantity = 1 }
+            }
+        };
+
+        _dataContext.Items.Add(item);
+        await _dataContext.SaveChangesAsync();
+
+        // Act
+        var result = await _itemService.DeleteItemAsync(itemId);
+
+        // Assert
+        Assert.That(result, Is.True);
+
+        var deleted = await _dataContext.Items.FindAsync(itemId);
+        Assert.That(deleted, Is.Null);
+
+        var relatedVariations = await _dataContext.Variations
+            .Where(v => v.ItemId == itemId)
+            .ToListAsync();
+
+        Assert.That(relatedVariations, Is.Empty);
+    }
 }
